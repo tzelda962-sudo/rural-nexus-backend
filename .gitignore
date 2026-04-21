@@ -48,3 +48,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Archived pre-pivot codebase (kept locally for reference, not tracked)
+/legacy/
