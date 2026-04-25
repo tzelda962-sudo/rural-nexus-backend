@@ -8,6 +8,7 @@ export const FeaturedVolunteers: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'role', 'location', 'program'],
+    hidden: true,
   },
   access: {
     read: isAnyone,

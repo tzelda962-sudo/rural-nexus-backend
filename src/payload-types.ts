@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    documents: Document;
     programs: Program;
     'news-events': NewsEvent;
     team: Team;
@@ -79,6 +80,7 @@ export interface Config {
     'homepage-testimonials': HomepageTestimonial;
     'volunteer-stats': VolunteerStat;
     'contact-inquiries': ContactInquiry;
+    publications: Publication;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +90,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     'news-events': NewsEventsSelect<false> | NewsEventsSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
@@ -98,6 +101,7 @@ export interface Config {
     'homepage-testimonials': HomepageTestimonialsSelect<false> | HomepageTestimonialsSelect<true>;
     'volunteer-stats': VolunteerStatsSelect<false> | VolunteerStatsSelect<true>;
     'contact-inquiries': ContactInquiriesSelect<false> | ContactInquiriesSelect<true>;
+    publications: PublicationsSelect<false> | PublicationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -107,8 +111,38 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    'home-page': HomePage;
+    'about-page': AboutPage;
+    'programs-page': ProgramsPage;
+    'program-detail-page': ProgramDetailPage;
+    'initiative-detail-page': InitiativeDetailPage;
+    'events-page': EventsPage;
+    'stories-page': StoriesPage;
+    'story-detail-page': StoryDetailPage;
+    'gallery-page': GalleryPage;
+    'impact-page': ImpactPage;
+    'research-page': ResearchPage;
+    'contact-page': ContactPage;
+    'news-event-detail-page': NewsEventDetailPage;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'programs-page': ProgramsPageSelect<false> | ProgramsPageSelect<true>;
+    'program-detail-page': ProgramDetailPageSelect<false> | ProgramDetailPageSelect<true>;
+    'initiative-detail-page': InitiativeDetailPageSelect<false> | InitiativeDetailPageSelect<true>;
+    'events-page': EventsPageSelect<false> | EventsPageSelect<true>;
+    'stories-page': StoriesPageSelect<false> | StoriesPageSelect<true>;
+    'story-detail-page': StoryDetailPageSelect<false> | StoryDetailPageSelect<true>;
+    'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
+    'impact-page': ImpactPageSelect<false> | ImpactPageSelect<true>;
+    'research-page': ResearchPageSelect<false> | ResearchPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'news-event-detail-page': NewsEventDetailPageSelect<false> | NewsEventDetailPageSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -185,6 +219,28 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * PDF and document uploads (publications, policy briefs, etc.)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs".
  */
@@ -195,26 +251,143 @@ export interface Program {
    */
   code: string;
   title: string;
+  /**
+   * URL slug. Auto-filled from title; edit to customize.
+   */
+  slug: string;
   description: string;
   /**
    * Tailwind color name (e.g. cyan, emerald)
    */
   color: string;
+  /**
+   * Hero image for the program detail page
+   */
+  heroImage?: (number | null) | Media;
+  /**
+   * Body content for the program detail page
+   */
+  longDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * "How we work on this pillar" section
+   */
+  methodologySection?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   sdgs?:
     | {
         goal: number;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Field projects under this program. Initiatives with "showInProjectsTab" are surfaced in the site-wide Action Hub Projects tab.
+   */
   initiatives?:
     | {
         title: string;
+        /**
+         * URL slug. Auto-filled from title; edit to customize.
+         */
+        slug: string;
         description: string;
+        /**
+         * e.g. "Turkana, Kenya"
+         */
+        location?: string | null;
+        status?: ('Planning' | 'Active' | 'Scaling' | 'Field Testing' | 'Completed') | null;
+        /**
+         * Headline metric, e.g. "12 villages, 4.5M L/yr"
+         */
+        stat?: string | null;
+        /**
+         * Icon shown on the initiative card.
+         */
+        icon?:
+          | (
+              | 'Layers'
+              | 'Rocket'
+              | 'Info'
+              | 'BarChart3'
+              | 'MessageSquareQuote'
+              | 'BookOpen'
+              | 'Users'
+              | 'Heart'
+              | 'Globe'
+              | 'Target'
+              | 'Zap'
+              | 'Sprout'
+              | 'Droplets'
+              | 'ShieldAlert'
+              | 'Tractor'
+              | 'Check'
+              | 'FileText'
+              | 'Calendar'
+              | 'MapPin'
+              | 'ExternalLink'
+              | 'Quote'
+            )
+          | null;
+        heroImage?: (number | null) | Media;
+        /**
+         * Body content for the initiative detail page
+         */
+        longDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * If on, this initiative appears in the site-wide Action Hub Projects tab.
+         */
+        showInProjectsTab?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -223,7 +396,12 @@ export interface Program {
 export interface NewsEvent {
   id: number;
   title: string;
+  /**
+   * URL slug. Auto-filled from title; edit to customize.
+   */
+  slug: string;
   date: string;
+  author?: string | null;
   summary: string;
   category: 'Publication' | 'Field Report' | 'Workshop' | 'Funding' | 'Policy' | 'News';
   /**
@@ -246,8 +424,14 @@ export interface NewsEvent {
     [k: string]: unknown;
   };
   image?: (number | null) | Media;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -308,6 +492,10 @@ export interface FeaturedVolunteer {
 export interface Story {
   id: number;
   title: string;
+  /**
+   * URL slug. Auto-filled from title; edit to customize.
+   */
+  slug: string;
   excerpt: string;
   location: string;
   program: string;
@@ -316,8 +504,16 @@ export interface Story {
    */
   readTime: string;
   date: string;
+  /**
+   * Shown on the story detail page
+   */
+  author?: string | null;
   isFeatured?: boolean | null;
   category: string;
+  /**
+   * Tailwind gradient stops for the placeholder card header, e.g. "from-emerald-600 to-leaf-500".
+   */
+  gradient?: string | null;
   image?: (number | null) | Media;
   content?: {
     root: {
@@ -334,8 +530,14 @@ export interface Story {
     };
     [k: string]: unknown;
   } | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -349,6 +551,15 @@ export interface Gallery {
   year: number;
   image: number | Media;
   caption?: string | null;
+  aspectRatio?: ('4/3' | 'square' | '16/10' | '3/4') | null;
+  /**
+   * Controls how many columns/rows this item spans in the masonry grid.
+   */
+  gridSize?: ('1x1' | '2x1' | '1x2') | null;
+  /**
+   * Tailwind gradient stops shown as a placeholder while the image loads.
+   */
+  gradient?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -416,6 +627,55 @@ export interface ContactInquiry {
   createdAt: string;
 }
 /**
+ * Research papers, policy briefs, annual reports, and workshop outputs.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications".
+ */
+export interface Publication {
+  id: number;
+  title: string;
+  /**
+   * URL slug. Auto-filled from title; edit to customize.
+   */
+  slug: string;
+  author: string;
+  category: 'Annual Report' | 'Policy Brief' | 'Research Paper' | 'Workshop' | 'Methodology';
+  publishedDate: string;
+  summary: string;
+  abstract?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * PDF upload — required for public download.
+   */
+  pdf?: (number | null) | Document;
+  /**
+   * Optional cover image for listings.
+   */
+  featuredImage?: (number | null) | Media;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -446,6 +706,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
       } | null)
     | ({
         relationTo: 'programs';
@@ -486,6 +750,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-inquiries';
         value: number | ContactInquiry;
+      } | null)
+    | ({
+        relationTo: 'publications';
+        value: number | Publication;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -574,13 +842,36 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs_select".
  */
 export interface ProgramsSelect<T extends boolean = true> {
   code?: T;
   title?: T;
+  slug?: T;
   description?: T;
   color?: T;
+  heroImage?: T;
+  longDescription?: T;
+  methodologySection?: T;
   sdgs?:
     | T
     | {
@@ -591,11 +882,27 @@ export interface ProgramsSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        slug?: T;
         description?: T;
+        location?: T;
+        status?: T;
+        stat?: T;
+        icon?: T;
+        heroImage?: T;
+        longDescription?: T;
+        showInProjectsTab?: T;
         id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -603,14 +910,24 @@ export interface ProgramsSelect<T extends boolean = true> {
  */
 export interface NewsEventsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   date?: T;
+  author?: T;
   summary?: T;
   category?: T;
   isHighlight?: T;
   content?: T;
   image?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -653,17 +970,28 @@ export interface FeaturedVolunteersSelect<T extends boolean = true> {
  */
 export interface StoriesSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   excerpt?: T;
   location?: T;
   program?: T;
   readTime?: T;
   date?: T;
+  author?: T;
   isFeatured?: T;
   category?: T;
+  gradient?: T;
   image?: T;
   content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -676,6 +1004,9 @@ export interface GallerySelect<T extends boolean = true> {
   year?: T;
   image?: T;
   caption?: T;
+  aspectRatio?: T;
+  gridSize?: T;
+  gradient?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -730,6 +1061,31 @@ export interface ContactInquiriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications_select".
+ */
+export interface PublicationsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  author?: T;
+  category?: T;
+  publishedDate?: T;
+  summary?: T;
+  abstract?: T;
+  pdf?: T;
+  featuredImage?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -767,6 +1123,1257 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Brand, navigation, footer, social, and SEO defaults applied site-wide.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  brand: {
+    name: string;
+    /**
+     * Single-letter logomark shown in the hex-mask header tile.
+     */
+    logoLetter?: string | null;
+    /**
+     * Optional logo image. Replaces the letter logomark when set.
+     */
+    logoImage?: (number | null) | Media;
+    tagline?: string | null;
+  };
+  navigation?: {
+    primaryLinks?:
+      | {
+          label: string;
+          path: string;
+          children?:
+            | {
+                label: string;
+                path: string;
+                description?: string | null;
+                /**
+                 * Lucide icon name. Frontend resolves to the corresponding lucide-vue-next component.
+                 */
+                icon?:
+                  | (
+                      | 'Layers'
+                      | 'Rocket'
+                      | 'Info'
+                      | 'BarChart3'
+                      | 'MessageSquareQuote'
+                      | 'BookOpen'
+                      | 'Users'
+                      | 'Heart'
+                      | 'Globe'
+                      | 'Target'
+                      | 'Zap'
+                      | 'Sprout'
+                      | 'Droplets'
+                      | 'ShieldAlert'
+                      | 'Tractor'
+                      | 'Check'
+                      | 'FileText'
+                      | 'Calendar'
+                      | 'MapPin'
+                      | 'ExternalLink'
+                      | 'Quote'
+                    )
+                  | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    ctaButton?: {
+      label?: string | null;
+      path?: string | null;
+    };
+  };
+  footer?: {
+    quickLinks?:
+      | {
+          label: string;
+          path: string;
+          id?: string | null;
+        }[]
+      | null;
+    contactPhone?: string | null;
+    contactEmail?: string | null;
+    contactAddress?: string | null;
+    /**
+     * Use {year} to auto-insert the current year.
+     */
+    copyrightText?: string | null;
+  };
+  social?:
+    | {
+        platform: 'twitter' | 'linkedin' | 'youtube' | 'instagram' | 'facebook';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  seo?: {
+    defaultTitle?: string | null;
+    defaultDescription?: string | null;
+    defaultOgImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero?: {
+    eyebrowTags?:
+      | {
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+    headlineLine1?: string | null;
+    /**
+     * Styled italic/gradient span on the frontend.
+     */
+    headlineEmphasis?: string | null;
+    headlineLine2?: string | null;
+    subtitle?: string | null;
+    backgroundImage?: (number | null) | Media;
+    primaryCta?: {
+      label?: string | null;
+      path?: string | null;
+    };
+    secondaryCta?: {
+      label?: string | null;
+      path?: string | null;
+    };
+  };
+  whoWeAre?: {
+    eyebrow?: string | null;
+    headingLine1?: string | null;
+    headingLine2Prefix?: string | null;
+    headingLine2Emphasis?: string | null;
+    headingLine2Suffix?: string | null;
+    body?: string | null;
+    stats?:
+      | {
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+    image?: (number | null) | Media;
+    floatingBadge?: {
+      /**
+       * Lucide icon name. Frontend resolves to the corresponding lucide-vue-next component.
+       */
+      icon?:
+        | (
+            | 'Layers'
+            | 'Rocket'
+            | 'Info'
+            | 'BarChart3'
+            | 'MessageSquareQuote'
+            | 'BookOpen'
+            | 'Users'
+            | 'Heart'
+            | 'Globe'
+            | 'Target'
+            | 'Zap'
+            | 'Sprout'
+            | 'Droplets'
+            | 'ShieldAlert'
+            | 'Tractor'
+            | 'Check'
+            | 'FileText'
+            | 'Calendar'
+            | 'MapPin'
+            | 'ExternalLink'
+            | 'Quote'
+          )
+        | null;
+      title?: string | null;
+      body?: string | null;
+    };
+  };
+  /**
+   * Pulls the first 3 from the HomepageTestimonials collection.
+   */
+  testimonialsSection?: {
+    heading?: string | null;
+  };
+  /**
+   * Sources rows from the News & Events collection.
+   */
+  newsSection?: {
+    heading?: string | null;
+    latestEventsCount?: number | null;
+    highlightsCount?: number | null;
+  };
+  missionSdgSection?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+    featuredSdgs?:
+      | {
+          goal: number;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  partnersSection?: {
+    heading?: string | null;
+    partners?:
+      | {
+          name: string;
+          logoImage?: (number | null) | Media;
+          style?: ('text' | 'logo') | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+  };
+  /**
+   * Team org-explorer section. Data comes from the Team collection.
+   */
+  orgSection?: {
+    heading?: string | null;
+    body?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs-page".
+ */
+export interface ProgramsPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    headlinePrefix?: string | null;
+    headlineEmphasis?: string | null;
+    body?: string | null;
+    headerBadges?:
+      | {
+          /**
+           * Lucide icon name. Frontend resolves to the corresponding lucide-vue-next component.
+           */
+          icon?:
+            | (
+                | 'Layers'
+                | 'Rocket'
+                | 'Info'
+                | 'BarChart3'
+                | 'MessageSquareQuote'
+                | 'BookOpen'
+                | 'Users'
+                | 'Heart'
+                | 'Globe'
+                | 'Target'
+                | 'Zap'
+                | 'Sprout'
+                | 'Droplets'
+                | 'ShieldAlert'
+                | 'Tractor'
+                | 'Check'
+                | 'FileText'
+                | 'Calendar'
+                | 'MapPin'
+                | 'ExternalLink'
+                | 'Quote'
+              )
+            | null;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ctaSection?: {
+    heading?: string | null;
+    body?: string | null;
+    primaryCta?: {
+      label?: string | null;
+      path?: string | null;
+    };
+    secondaryCta?: {
+      label?: string | null;
+      path?: string | null;
+    };
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Applied to every /programs/:slug page. Program-specific content comes from the Programs collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "program-detail-page".
+ */
+export interface ProgramDetailPage {
+  id: number;
+  initiativesHeading?: string | null;
+  ctaHeading?: string | null;
+  ctaPath?: string | null;
+  backLinkLabel?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Applied to every /programs/:programSlug/initiatives/:initiativeSlug page. Initiative content comes from the Programs.initiatives[] array.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "initiative-detail-page".
+ */
+export interface InitiativeDetailPage {
+  id: number;
+  relatedHeading?: string | null;
+  ctaHeading?: string | null;
+  ctaPath?: string | null;
+  backLinkLabel?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Controls the /events Action Hub chrome. Projects tab sources from Programs.initiatives where showInProjectsTab=true. Publications tab sources from the Publications collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page".
+ */
+export interface EventsPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    headlinePrefix?: string | null;
+    headlineEmphasis?: string | null;
+    body?: string | null;
+  };
+  tabs?: {
+    projectsTabLabel?: string | null;
+    publicationsTabLabel?: string | null;
+    newsTabLabel?: string | null;
+  };
+  ctaSection?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stories-page".
+ */
+export interface StoriesPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    headlinePrefix?: string | null;
+    headlineEmphasis?: string | null;
+    body?: string | null;
+  };
+  /**
+   * Pulls the first Story with isFeatured=true.
+   */
+  featuredSection?: {
+    overrideCategoryLabel?: string | null;
+  };
+  gridSection?: {
+    headingPrefix?: string | null;
+    headingEmphasis?: string | null;
+    body?: string | null;
+    filterButtonLabel?: string | null;
+    loadMoreLabel?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Applied to every /stories/:slug page. Per-story content comes from the Stories collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "story-detail-page".
+ */
+export interface StoryDetailPage {
+  id: number;
+  backLinkLabel?: string | null;
+  relatedHeading?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page".
+ */
+export interface GalleryPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+  };
+  filters?: {
+    allLabel?: string | null;
+    /**
+     * Controls the filter bar order on the frontend.
+     */
+    categoryOrder?:
+      | {
+          value: 'Field Work' | 'Community' | 'Research' | 'Events' | 'Partners';
+          id?: string | null;
+        }[]
+      | null;
+  };
+  loadMoreLabel?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Metric cards are sourced from the ImpactMetrics collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "impact-page".
+ */
+export interface ImpactPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    headlinePrefix?: string | null;
+    headlineEmphasis?: string | null;
+    body?: string | null;
+  };
+  assessmentSection?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+    badges?:
+      | {
+          value: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Publications grid is sourced from the Publications collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-page".
+ */
+export interface ResearchPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    headlinePrefix?: string | null;
+    headlineEmphasis?: string | null;
+    body?: string | null;
+  };
+  filtersSection?: {
+    searchPlaceholder?: string | null;
+    categories?:
+      | {
+          label: string;
+          /**
+           * Lucide icon name. Frontend resolves to the corresponding lucide-vue-next component.
+           */
+          icon?:
+            | (
+                | 'Layers'
+                | 'Rocket'
+                | 'Info'
+                | 'BarChart3'
+                | 'MessageSquareQuote'
+                | 'BookOpen'
+                | 'Users'
+                | 'Heart'
+                | 'Globe'
+                | 'Target'
+                | 'Zap'
+                | 'Sprout'
+                | 'Droplets'
+                | 'ShieldAlert'
+                | 'Tractor'
+                | 'Check'
+                | 'FileText'
+                | 'Calendar'
+                | 'MapPin'
+                | 'ExternalLink'
+                | 'Quote'
+              )
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    emptyStateHeading?: string | null;
+    emptyStateBody?: string | null;
+    clearFiltersLabel?: string | null;
+  };
+  submitCtaSection?: {
+    badge?: string | null;
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  header?: {
+    heading?: string | null;
+    body?: string | null;
+  };
+  formSection?: {
+    heading?: string | null;
+    body?: string | null;
+    interestAreas?:
+      | {
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+  };
+  hqSection?: {
+    eyebrow?: string | null;
+    orgName?: string | null;
+    address?: string | null;
+    directionsUrl?: string | null;
+  };
+  directContacts?: {
+    eyebrow?: string | null;
+    contacts?:
+      | {
+          label: string;
+          email: string;
+          /**
+           * Lucide icon name. Frontend resolves to the corresponding lucide-vue-next component.
+           */
+          icon?:
+            | (
+                | 'Layers'
+                | 'Rocket'
+                | 'Info'
+                | 'BarChart3'
+                | 'MessageSquareQuote'
+                | 'BookOpen'
+                | 'Users'
+                | 'Heart'
+                | 'Globe'
+                | 'Target'
+                | 'Zap'
+                | 'Sprout'
+                | 'Droplets'
+                | 'ShieldAlert'
+                | 'Tractor'
+                | 'Check'
+                | 'FileText'
+                | 'Calendar'
+                | 'MapPin'
+                | 'ExternalLink'
+                | 'Quote'
+              )
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Applied to every /news/:slug page. Per-article content comes from the NewsEvents collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-event-detail-page".
+ */
+export interface NewsEventDetailPage {
+  id: number;
+  backLinkLabel?: string | null;
+  /**
+   * Use {category} to inject the current article category.
+   */
+  relatedHeading?: string | null;
+  notFoundHeading?: string | null;
+  notFoundBody?: string | null;
+  notFoundCtaLabel?: string | null;
+  notFoundCtaPath?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        name?: T;
+        logoLetter?: T;
+        logoImage?: T;
+        tagline?: T;
+      };
+  navigation?:
+    | T
+    | {
+        primaryLinks?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+              children?:
+                | T
+                | {
+                    label?: T;
+                    path?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        ctaButton?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+            };
+      };
+  footer?:
+    | T
+    | {
+        quickLinks?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+              id?: T;
+            };
+        contactPhone?: T;
+        contactEmail?: T;
+        contactAddress?: T;
+        copyrightText?: T;
+      };
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        defaultTitle?: T;
+        defaultDescription?: T;
+        defaultOgImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrowTags?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+        headlineLine1?: T;
+        headlineEmphasis?: T;
+        headlineLine2?: T;
+        subtitle?: T;
+        backgroundImage?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+            };
+        secondaryCta?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+            };
+      };
+  whoWeAre?:
+    | T
+    | {
+        eyebrow?: T;
+        headingLine1?: T;
+        headingLine2Prefix?: T;
+        headingLine2Emphasis?: T;
+        headingLine2Suffix?: T;
+        body?: T;
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+        ctaLabel?: T;
+        ctaPath?: T;
+        image?: T;
+        floatingBadge?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              body?: T;
+            };
+      };
+  testimonialsSection?:
+    | T
+    | {
+        heading?: T;
+      };
+  newsSection?:
+    | T
+    | {
+        heading?: T;
+        latestEventsCount?: T;
+        highlightsCount?: T;
+      };
+  missionSdgSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+        featuredSdgs?:
+          | T
+          | {
+              goal?: T;
+              id?: T;
+            };
+      };
+  partnersSection?:
+    | T
+    | {
+        heading?: T;
+        partners?:
+          | T
+          | {
+              name?: T;
+              logoImage?: T;
+              style?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+      };
+  orgSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs-page_select".
+ */
+export interface ProgramsPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        headlinePrefix?: T;
+        headlineEmphasis?: T;
+        body?: T;
+        headerBadges?:
+          | T
+          | {
+              icon?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  ctaSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+            };
+        secondaryCta?:
+          | T
+          | {
+              label?: T;
+              path?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "program-detail-page_select".
+ */
+export interface ProgramDetailPageSelect<T extends boolean = true> {
+  initiativesHeading?: T;
+  ctaHeading?: T;
+  ctaPath?: T;
+  backLinkLabel?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "initiative-detail-page_select".
+ */
+export interface InitiativeDetailPageSelect<T extends boolean = true> {
+  relatedHeading?: T;
+  ctaHeading?: T;
+  ctaPath?: T;
+  backLinkLabel?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events-page_select".
+ */
+export interface EventsPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        headlinePrefix?: T;
+        headlineEmphasis?: T;
+        body?: T;
+      };
+  tabs?:
+    | T
+    | {
+        projectsTabLabel?: T;
+        publicationsTabLabel?: T;
+        newsTabLabel?: T;
+      };
+  ctaSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stories-page_select".
+ */
+export interface StoriesPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        headlinePrefix?: T;
+        headlineEmphasis?: T;
+        body?: T;
+      };
+  featuredSection?:
+    | T
+    | {
+        overrideCategoryLabel?: T;
+      };
+  gridSection?:
+    | T
+    | {
+        headingPrefix?: T;
+        headingEmphasis?: T;
+        body?: T;
+        filterButtonLabel?: T;
+        loadMoreLabel?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "story-detail-page_select".
+ */
+export interface StoryDetailPageSelect<T extends boolean = true> {
+  backLinkLabel?: T;
+  relatedHeading?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page_select".
+ */
+export interface GalleryPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+      };
+  filters?:
+    | T
+    | {
+        allLabel?: T;
+        categoryOrder?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+      };
+  loadMoreLabel?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "impact-page_select".
+ */
+export interface ImpactPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        headlinePrefix?: T;
+        headlineEmphasis?: T;
+        body?: T;
+      };
+  assessmentSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+        badges?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-page_select".
+ */
+export interface ResearchPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        headlinePrefix?: T;
+        headlineEmphasis?: T;
+        body?: T;
+      };
+  filtersSection?:
+    | T
+    | {
+        searchPlaceholder?: T;
+        categories?:
+          | T
+          | {
+              label?: T;
+              icon?: T;
+              id?: T;
+            };
+        emptyStateHeading?: T;
+        emptyStateBody?: T;
+        clearFiltersLabel?: T;
+      };
+  submitCtaSection?:
+    | T
+    | {
+        badge?: T;
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+      };
+  formSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        interestAreas?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+        submitLabel?: T;
+        successMessage?: T;
+      };
+  hqSection?:
+    | T
+    | {
+        eyebrow?: T;
+        orgName?: T;
+        address?: T;
+        directionsUrl?: T;
+      };
+  directContacts?:
+    | T
+    | {
+        eyebrow?: T;
+        contacts?:
+          | T
+          | {
+              label?: T;
+              email?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-event-detail-page_select".
+ */
+export interface NewsEventDetailPageSelect<T extends boolean = true> {
+  backLinkLabel?: T;
+  relatedHeading?: T;
+  notFoundHeading?: T;
+  notFoundBody?: T;
+  notFoundCtaLabel?: T;
+  notFoundCtaPath?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

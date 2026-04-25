@@ -10,6 +10,7 @@ export const VolunteerStats: CollectionConfig = {
     useAsTitle: 'label',
     defaultColumns: ['label', 'value'],
     description: 'The 4 counter tiles shown on the Volunteer page',
+    hidden: true,
   },
   access: {
     read: isAnyone,

@@ -8,6 +8,7 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Documents } from './collections/Documents'
 import { Programs } from './collections/Programs'
 import { NewsEvents } from './collections/NewsEvents'
 import { Team } from './collections/Team'
@@ -18,9 +19,29 @@ import { ImpactMetrics } from './collections/ImpactMetrics'
 import { HomepageTestimonials } from './collections/HomepageTestimonials'
 import { VolunteerStats } from './collections/VolunteerStats'
 import { ContactInquiries } from './collections/ContactInquiries'
+import { Publications } from './collections/Publications'
+
+import {
+  SiteSettings,
+  HomePage,
+  AboutPage,
+  ProgramsPage,
+  ProgramDetailPage,
+  InitiativeDetailPage,
+  EventsPage,
+  StoriesPage,
+  StoryDetailPage,
+  GalleryPage,
+  ImpactPage,
+  ResearchPage,
+  ContactPage,
+  NewsEventDetailPage,
+} from './globals'
 
 import { keepAliveEndpoint } from './endpoints/keepAlive'
 import { contactEndpoint } from './endpoints/contact'
+import { listInitiativesEndpoint, getInitiativeEndpoint } from './endpoints/initiatives'
+import { searchEndpoint } from './endpoints/search'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -30,6 +51,13 @@ const frontendOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
   .map((s) => s.trim())
   .filter(Boolean)
 const serverUrl = process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const previewBaseUrl = frontendOrigins[0] ?? 'http://localhost:3000'
+
+const livePreviewBreakpoints = [
+  { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+  { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+  { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+]
 
 export default buildConfig({
   serverURL: serverUrl,
@@ -38,10 +66,38 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    livePreview: {
+      url: ({ collectionConfig, globalConfig, data }) => {
+        const segment = globalConfig
+          ? `globals/${globalConfig.slug}`
+          : collectionConfig
+            ? `${collectionConfig.slug}/${(data as { slug?: string; id?: string | number })?.slug ?? (data as { id?: string | number })?.id ?? ''}`
+            : ''
+        return `${previewBaseUrl}/__preview/${segment}`
+      },
+      breakpoints: livePreviewBreakpoints,
+      collections: ['programs', 'news-events', 'stories', 'publications'],
+      globals: [
+        'home-page',
+        'about-page',
+        'programs-page',
+        'program-detail-page',
+        'initiative-detail-page',
+        'events-page',
+        'stories-page',
+        'story-detail-page',
+        'gallery-page',
+        'impact-page',
+        'research-page',
+        'contact-page',
+        'news-event-detail-page',
+      ],
+    },
   },
   collections: [
     Users,
     Media,
+    Documents,
     Programs,
     NewsEvents,
     Team,
@@ -52,8 +108,31 @@ export default buildConfig({
     HomepageTestimonials,
     VolunteerStats,
     ContactInquiries,
+    Publications,
   ],
-  endpoints: [keepAliveEndpoint, contactEndpoint],
+  globals: [
+    SiteSettings,
+    HomePage,
+    AboutPage,
+    ProgramsPage,
+    ProgramDetailPage,
+    InitiativeDetailPage,
+    EventsPage,
+    StoriesPage,
+    StoryDetailPage,
+    GalleryPage,
+    ImpactPage,
+    ResearchPage,
+    ContactPage,
+    NewsEventDetailPage,
+  ],
+  endpoints: [
+    keepAliveEndpoint,
+    contactEndpoint,
+    listInitiativesEndpoint,
+    getInitiativeEndpoint,
+    searchEndpoint,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -71,6 +150,7 @@ export default buildConfig({
     s3Storage({
       collections: {
         media: true,
+        documents: true,
       },
       bucket: process.env.S3_BUCKET || '',
       config: {

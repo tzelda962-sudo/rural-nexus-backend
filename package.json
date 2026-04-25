@@ -12,7 +12,8 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
-    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload"
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/publications.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.83.0",

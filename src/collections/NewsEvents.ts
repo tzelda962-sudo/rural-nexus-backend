@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isAnyone } from '../access/isAnyone'
+import { slugField } from '../fields/slug'
 
 export const NewsEvents: CollectionConfig = {
   slug: 'news-events',
@@ -15,9 +16,12 @@ export const NewsEvents: CollectionConfig = {
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
   },
+  versions: { drafts: true },
   fields: [
     { name: 'title', type: 'text', required: true },
+    slugField('title'),
     { name: 'date', type: 'date', required: true },
+    { name: 'author', type: 'text' },
     { name: 'summary', type: 'textarea', required: true },
     {
       name: 'category',
@@ -40,5 +44,14 @@ export const NewsEvents: CollectionConfig = {
     },
     { name: 'content', type: 'richText', required: true },
     { name: 'image', type: 'upload', relationTo: 'media' },
+    {
+      name: 'seo',
+      type: 'group',
+      fields: [
+        { name: 'title', type: 'text' },
+        { name: 'description', type: 'textarea' },
+        { name: 'ogImage', type: 'upload', relationTo: 'media' },
+      ],
+    },
   ],
 }
