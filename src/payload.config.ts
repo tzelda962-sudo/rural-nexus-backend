@@ -144,6 +144,9 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // push:true syncs schema changes (new tables/columns) directly to the DB
+    // without requiring explicit migration files. Safe for additive changes.
+    push: true,
   }),
   cors: frontendOrigins,
   csrf: frontendOrigins,
