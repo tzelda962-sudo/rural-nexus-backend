@@ -147,6 +147,26 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
     {
+      name: 'interventionCountries',
+      type: 'array',
+      labels: { singular: 'Country', plural: 'Countries of Intervention' },
+      admin: { description: 'Countries where RuralNexus has active field operations. Used to power the interactive map on the Our Network page.' },
+      fields: [
+        { name: 'name', type: 'text', required: true },
+        {
+          name: 'isoCode',
+          type: 'text',
+          required: true,
+          admin: { description: 'ISO 3166-1 alpha-2 code, e.g. "CM" for Cameroon.' },
+        },
+        {
+          name: 'programs',
+          type: 'textarea',
+          admin: { description: 'Brief note on active programs in this country (shown in map tooltip).' },
+        },
+      ],
+    },
+    {
       name: 'seo',
       type: 'group',
       fields: [

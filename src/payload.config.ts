@@ -20,6 +20,7 @@ import { HomepageTestimonials } from './collections/HomepageTestimonials'
 import { VolunteerStats } from './collections/VolunteerStats'
 import { ContactInquiries } from './collections/ContactInquiries'
 import { Publications } from './collections/Publications'
+import { Partners } from './collections/Partners'
 
 import {
   SiteSettings,
@@ -109,6 +110,7 @@ export default buildConfig({
     VolunteerStats,
     ContactInquiries,
     Publications,
+    Partners,
   ],
   globals: [
     SiteSettings,

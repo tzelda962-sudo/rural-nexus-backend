@@ -19,13 +19,26 @@ export const Team: CollectionConfig = {
     { name: 'name', type: 'text', required: true },
     { name: 'role', type: 'text', required: true },
     {
+      name: 'memberType',
+      type: 'select',
+      required: true,
+      defaultValue: 'staff',
+      admin: { description: 'Controls how this member is grouped and displayed on the site.' },
+      options: [
+        { label: 'CEO / Managing Director', value: 'ceo' },
+        { label: 'PA Manager', value: 'pa-manager' },
+        { label: 'Advisory Board', value: 'advisory' },
+        { label: 'Staff', value: 'staff' },
+      ],
+    },
+    {
       name: 'parent',
       type: 'relationship',
       relationTo: 'team',
       hasMany: false,
-      admin: { description: 'Reporting line — leave empty for root (Director)' },
+      admin: { description: 'Reporting line — leave empty for root (Director) and advisory members.' },
     },
-    { name: 'bio', type: 'textarea', required: true },
+    { name: 'bio', type: 'textarea' },
     {
       name: 'expertise',
       type: 'array',

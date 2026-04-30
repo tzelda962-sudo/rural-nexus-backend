@@ -13,7 +13,15 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/publications.ts"
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/publications.ts",
+    "seed:programs": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/programs.ts",
+    "seed:news-events": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/news-events.ts",
+    "seed:team": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/team.ts",
+    "seed:stories": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/stories.ts",
+    "seed:metrics": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/impact-metrics.ts",
+    "seed:testimonials": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/testimonials.ts",
+    "seed:partners": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/partners.ts",
+    "seed:all": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/index.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.83.0",

@@ -81,6 +81,7 @@ export interface Config {
     'volunteer-stats': VolunteerStat;
     'contact-inquiries': ContactInquiry;
     publications: Publication;
+    partners: Partner;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     'volunteer-stats': VolunteerStatsSelect<false> | VolunteerStatsSelect<true>;
     'contact-inquiries': ContactInquiriesSelect<false> | ContactInquiriesSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -442,10 +444,14 @@ export interface Team {
   name: string;
   role: string;
   /**
-   * Reporting line — leave empty for root (Director)
+   * Controls how this member is grouped and displayed on the site.
+   */
+  memberType: 'ceo' | 'pa-manager' | 'advisory' | 'staff';
+  /**
+   * Reporting line — leave empty for root (Director) and advisory members.
    */
   parent?: (number | null) | Team;
-  bio: string;
+  bio?: string | null;
   expertise?:
     | {
         skill: string;
@@ -676,6 +682,28 @@ export interface Publication {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Collaborating universities, research institutes, and NGOs.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  name: string;
+  /**
+   * Short identifier, e.g. "IITA", "ZALF", "CIRAD".
+   */
+  abbreviation?: string | null;
+  type: 'University' | 'Research Institute' | 'NGO' | 'Funding Agency';
+  continent: 'Europe' | 'Africa' | 'Global';
+  country: string;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -754,6 +782,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'publications';
         value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -936,6 +968,7 @@ export interface NewsEventsSelect<T extends boolean = true> {
 export interface TeamSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  memberType?: T;
   parent?: T;
   bio?: T;
   expertise?:
@@ -1086,6 +1119,22 @@ export interface PublicationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  abbreviation?: T;
+  type?: T;
+  continent?: T;
+  country?: T;
+  website?: T;
+  logo?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1213,6 +1262,23 @@ export interface SiteSetting {
     | {
         platform: 'twitter' | 'linkedin' | 'youtube' | 'instagram' | 'facebook';
         url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Countries where RuralNexus has active field operations. Used to power the interactive map on the Our Network page.
+   */
+  interventionCountries?:
+    | {
+        name: string;
+        /**
+         * ISO 3166-1 alpha-2 code, e.g. "CM" for Cameroon.
+         */
+        isoCode: string;
+        /**
+         * Brief note on active programs in this country (shown in map tooltip).
+         */
+        programs?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1853,6 +1919,14 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         platform?: T;
         url?: T;
+        id?: T;
+      };
+  interventionCountries?:
+    | T
+    | {
+        name?: T;
+        isoCode?: T;
+        programs?: T;
         id?: T;
       };
   seo?:
