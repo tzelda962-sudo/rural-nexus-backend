@@ -132,7 +132,8 @@ export async function seed(payload: Payload) {
       continue
     }
 
-    await payload.create({ collection: 'partners', data: partner })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await payload.create({ collection: 'partners', data: partner as any })
     payload.logger.info(`[seed:partners] created: ${partner.abbreviation} (${partner.country})`)
   }
 
