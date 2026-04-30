@@ -42,6 +42,7 @@
   "exclude": [
     "node_modules",
     "src_copy",
-    "legacy"
+    "legacy",
+    "src/seed"
   ]
 }
