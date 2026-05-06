@@ -8,7 +8,7 @@ export const Publications: CollectionConfig = {
   labels: { singular: 'Publication', plural: 'Publications' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'author', 'publishedDate'],
+    defaultColumns: ['title', 'publicationType', 'category', 'author', 'publishedDate'],
     description: 'Research papers, policy briefs, annual reports, and workshop outputs.',
   },
   access: {
@@ -21,11 +21,29 @@ export const Publications: CollectionConfig = {
   fields: [
     { name: 'title', type: 'text', required: true },
     slugField('title'),
-    { name: 'author', type: 'text', required: true },
+    {
+      name: 'publicationType',
+      type: 'select',
+      required: true,
+      defaultValue: 'internal',
+      options: [
+        { label: 'Internal (hosted here)', value: 'internal' },
+        { label: 'External (ResearchGate / DOI)', value: 'external' },
+      ],
+      admin: { position: 'sidebar', description: 'External publications redirect to the provided URL.' },
+    },
+    {
+      name: 'externalUrl',
+      type: 'text',
+      admin: {
+        description: 'Full URL to the publication on ResearchGate or another platform.',
+        condition: (data) => data.publicationType === 'external',
+      },
+    },
+    { name: 'author', type: 'text' },
     {
       name: 'category',
       type: 'select',
-      required: true,
       options: [
         { label: 'Annual Report', value: 'Annual Report' },
         { label: 'Policy Brief', value: 'Policy Brief' },
@@ -34,14 +52,17 @@ export const Publications: CollectionConfig = {
         { label: 'Methodology', value: 'Methodology' },
       ],
     },
-    { name: 'publishedDate', type: 'date', required: true },
-    { name: 'summary', type: 'textarea', required: true },
+    { name: 'publishedDate', type: 'date' },
+    { name: 'summary', type: 'textarea' },
     { name: 'abstract', type: 'richText' },
     {
       name: 'pdf',
       type: 'upload',
       relationTo: 'documents',
-      admin: { description: 'PDF upload — required for public download.' },
+      admin: {
+        description: 'PDF upload — required for public download.',
+        condition: (data) => data.publicationType !== 'external',
+      },
     },
     {
       name: 'featuredImage',

@@ -21,6 +21,7 @@
     "seed:metrics": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/impact-metrics.ts",
     "seed:testimonials": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/testimonials.ts",
     "seed:partners": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/partners.ts",
+    "seed:researchgate": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/researchgate-publications.ts",
     "seed:all": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/index.ts"
   },
   "dependencies": {

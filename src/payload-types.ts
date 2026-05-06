@@ -645,10 +645,18 @@ export interface Publication {
    * URL slug. Auto-filled from title; edit to customize.
    */
   slug: string;
-  author: string;
-  category: 'Annual Report' | 'Policy Brief' | 'Research Paper' | 'Workshop' | 'Methodology';
-  publishedDate: string;
-  summary: string;
+  /**
+   * External publications redirect to the provided URL.
+   */
+  publicationType: 'internal' | 'external';
+  /**
+   * Full URL to the publication on ResearchGate or another platform.
+   */
+  externalUrl?: string | null;
+  author?: string | null;
+  category?: ('Annual Report' | 'Policy Brief' | 'Research Paper' | 'Workshop' | 'Methodology') | null;
+  publishedDate?: string | null;
+  summary?: string | null;
   abstract?: {
     root: {
       type: string;
@@ -1099,6 +1107,8 @@ export interface ContactInquiriesSelect<T extends boolean = true> {
 export interface PublicationsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  publicationType?: T;
+  externalUrl?: T;
   author?: T;
   category?: T;
   publishedDate?: T;
