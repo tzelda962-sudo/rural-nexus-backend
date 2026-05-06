@@ -52,13 +52,6 @@ const frontendOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
   .map((s) => s.trim())
   .filter(Boolean)
 const serverUrl = process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000'
-const previewBaseUrl = frontendOrigins[0] ?? 'http://localhost:3000'
-
-const livePreviewBreakpoints = [
-  { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
-  { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
-  { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
-]
 
 export default buildConfig({
   serverURL: serverUrl,
@@ -66,33 +59,6 @@ export default buildConfig({
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
-    },
-    livePreview: {
-      url: ({ collectionConfig, globalConfig, data }) => {
-        const segment = globalConfig
-          ? `globals/${globalConfig.slug}`
-          : collectionConfig
-            ? `${collectionConfig.slug}/${(data as { slug?: string; id?: string | number })?.slug ?? (data as { id?: string | number })?.id ?? ''}`
-            : ''
-        return `${previewBaseUrl}/__preview/${segment}`
-      },
-      breakpoints: livePreviewBreakpoints,
-      collections: ['programs', 'news-events', 'stories', 'publications'],
-      globals: [
-        'home-page',
-        'about-page',
-        'programs-page',
-        'program-detail-page',
-        'initiative-detail-page',
-        'events-page',
-        'stories-page',
-        'story-detail-page',
-        'gallery-page',
-        'impact-page',
-        'research-page',
-        'contact-page',
-        'news-event-detail-page',
-      ],
     },
   },
   collections: [
