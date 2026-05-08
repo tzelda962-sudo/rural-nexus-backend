@@ -448,6 +448,10 @@ export interface Team {
    */
   memberType: 'ceo' | 'pa-manager' | 'advisory' | 'staff';
   /**
+   * Toggle whether this team member appears on the site.
+   */
+  show?: boolean | null;
+  /**
    * Reporting line — leave empty for root (Director) and advisory members.
    */
   parent?: (number | null) | Team;
@@ -705,6 +709,10 @@ export interface Partner {
   type: 'University' | 'Research Institute' | 'NGO' | 'Funding Agency';
   continent: 'Europe' | 'Africa' | 'Global';
   country: string;
+  /**
+   * Toggle whether this partner/collaborator appears on the network page.
+   */
+  show?: boolean | null;
   website?: string | null;
   logo?: (number | null) | Media;
   description?: string | null;
@@ -977,6 +985,7 @@ export interface TeamSelect<T extends boolean = true> {
   name?: T;
   role?: T;
   memberType?: T;
+  show?: T;
   parent?: T;
   bio?: T;
   expertise?:
@@ -1137,6 +1146,7 @@ export interface PartnersSelect<T extends boolean = true> {
   type?: T;
   continent?: T;
   country?: T;
+  show?: T;
   website?: T;
   logo?: T;
   description?: T;
@@ -1436,14 +1446,48 @@ export interface AboutPage {
   header?: {
     eyebrow?: string | null;
     heading?: string | null;
+    headingEmphasis?: string | null;
     body?: string | null;
   };
-  /**
-   * Team org-explorer section. Data comes from the Team collection.
-   */
-  orgSection?: {
+  missionVision?: {
+    heading?: string | null;
+    mission?: string | null;
+    vision?: string | null;
+  };
+  approachSection?: {
     heading?: string | null;
     body?: string | null;
+    pillars?:
+      | {
+          title?: string | null;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  geographySection?: {
+    heading?: string | null;
+    body?: string | null;
+    regions?:
+      | {
+          name?: string | null;
+          /**
+           * Comma-separated list
+           */
+          countries?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  valuesSection?: {
+    heading?: string | null;
+    values?:
+      | {
+          title?: string | null;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
   };
   seo?: {
     metaTitle?: string | null;
@@ -2071,13 +2115,53 @@ export interface AboutPageSelect<T extends boolean = true> {
     | {
         eyebrow?: T;
         heading?: T;
+        headingEmphasis?: T;
         body?: T;
       };
-  orgSection?:
+  missionVision?:
+    | T
+    | {
+        heading?: T;
+        mission?: T;
+        vision?: T;
+      };
+  approachSection?:
     | T
     | {
         heading?: T;
         body?: T;
+        pillars?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  geographySection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        regions?:
+          | T
+          | {
+              name?: T;
+              countries?: T;
+              id?: T;
+            };
+      };
+  valuesSection?:
+    | T
+    | {
+        heading?: T;
+        values?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
       };
   seo?:
     | T

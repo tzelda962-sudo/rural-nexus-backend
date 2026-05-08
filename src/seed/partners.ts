@@ -83,7 +83,7 @@ const partners = [
     country: 'Rwanda',
   },
   {
-    name: "Institut des Sciences Agronomiques du Burundi",
+    name: 'Institut des Sciences Agronomiques du Burundi',
     abbreviation: 'ISABU',
     type: 'Research Institute',
     continent: 'Africa',
@@ -128,12 +128,22 @@ export async function seed(payload: Payload) {
     })
 
     if (existing.docs.length > 0) {
-      payload.logger.info(`[seed:partners] skip — already exists: ${partner.abbreviation}`)
+      const [doc] = existing.docs
+      if (typeof doc.show === 'undefined') {
+        await payload.update({
+          collection: 'partners',
+          id: doc.id,
+          data: { show: true },
+        })
+        payload.logger.info(`[seed:partners] patched show=true — ${partner.abbreviation}`)
+      } else {
+        payload.logger.info(`[seed:partners] skip — already exists: ${partner.abbreviation}`)
+      }
       continue
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await payload.create({ collection: 'partners', data: partner as any })
+    await payload.create({ collection: 'partners', data: { ...partner, show: true } as any })
     payload.logger.info(`[seed:partners] created: ${partner.abbreviation} (${partner.country})`)
   }
 

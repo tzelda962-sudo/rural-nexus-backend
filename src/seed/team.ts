@@ -26,7 +26,7 @@ const members: MockMember[] = [
     role: 'CEO & Managing Director',
     memberType: 'ceo',
     parentMockId: null,
-    bio: 'CEO and Managing Director of RuralNexus, with extensive expertise in agricultural sciences, agronomy, and rural development under Germany\'s jurisdiction.',
+    bio: "CEO and Managing Director of RuralNexus, with extensive expertise in agricultural sciences, agronomy, and rural development under Germany's jurisdiction.",
     expertise: ['Agricultural Sciences', 'Agronomy', 'Rural Development', 'Project Management'],
   },
   {
@@ -164,8 +164,18 @@ export async function seed(payload: Payload) {
     })
 
     if (already.docs.length > 0) {
-      payload.logger.info(`[seed:team] skip — already exists: ${member.name}`)
-      idMap.set(member.mockId, already.docs[0].id as string)
+      const [existingDoc] = already.docs
+      if (typeof existingDoc.show === 'undefined') {
+        await payload.update({
+          collection: 'team',
+          id: existingDoc.id,
+          data: { show: true },
+        })
+        payload.logger.info(`[seed:team] patched show=true — ${member.name}`)
+      } else {
+        payload.logger.info(`[seed:team] skip — already exists: ${member.name}`)
+      }
+      idMap.set(member.mockId, existingDoc.id as string)
       continue
     }
 
@@ -178,11 +188,10 @@ export async function seed(payload: Payload) {
         name: member.name,
         role: member.role,
         memberType: member.memberType,
+        show: true,
         ...(member.bio ? { bio: member.bio } : {}),
         ...(parentId ? { parent: parentId } : {}),
-        ...(member.expertise
-          ? { expertise: member.expertise.map((skill) => ({ skill })) }
-          : {}),
+        ...(member.expertise ? { expertise: member.expertise.map((skill) => ({ skill })) } : {}),
       } as any,
     })
 

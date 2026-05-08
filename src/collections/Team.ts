@@ -7,7 +7,7 @@ export const Team: CollectionConfig = {
   labels: { singular: 'Team Member', plural: 'Team Members' },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'role', 'parent'],
+    defaultColumns: ['name', 'role', 'memberType', 'show'],
   },
   access: {
     read: isAnyone,
@@ -32,11 +32,21 @@ export const Team: CollectionConfig = {
       ],
     },
     {
+      name: 'show',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description: 'Toggle whether this team member appears on the site.',
+      },
+    },
+    {
       name: 'parent',
       type: 'relationship',
       relationTo: 'team',
       hasMany: false,
-      admin: { description: 'Reporting line — leave empty for root (Director) and advisory members.' },
+      admin: {
+        description: 'Reporting line — leave empty for root (Director) and advisory members.',
+      },
     },
     { name: 'bio', type: 'textarea' },
     {
