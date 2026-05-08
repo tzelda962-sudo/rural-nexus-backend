@@ -7,6 +7,8 @@ import { seed as seedStories } from './stories'
 import { seed as seedImpactMetrics } from './impact-metrics'
 import { seed as seedTestimonials } from './testimonials'
 import { seed as seedPartners } from './partners'
+import { seed as seedHomePage } from './homepage'
+import { seed as seedSiteSettings } from './site-settings'
 
 // Publications data (kept inline to avoid importing the legacy standalone script)
 const publications = [
@@ -70,6 +72,8 @@ async function main() {
   await seedImpactMetrics(payload)
   await seedTestimonials(payload)
   await seedPartners(payload)
+  await seedSiteSettings(payload)
+  await seedHomePage(payload)
   await seedPublications(payload)
 
   payload.logger.info('[seed:all] complete')
