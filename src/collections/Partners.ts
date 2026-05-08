@@ -45,6 +45,14 @@ export const Partners: CollectionConfig = {
       ],
     },
     { name: 'country', type: 'text', required: true },
+    {
+      name: 'show',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description: 'Toggle whether this partner/collaborator appears on the network page.',
+      },
+    },
     { name: 'website', type: 'text' },
     { name: 'logo', type: 'upload', relationTo: 'media' },
     { name: 'description', type: 'textarea' },
