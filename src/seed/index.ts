@@ -9,6 +9,7 @@ import { seed as seedTestimonials } from './testimonials'
 import { seed as seedPartners } from './partners'
 import { seed as seedHomePage } from './homepage'
 import { seed as seedSiteSettings } from './site-settings'
+import { seed as seedContactPage } from './contact-page'
 
 // Publications data (kept inline to avoid importing the legacy standalone script)
 const publications = [
@@ -74,6 +75,7 @@ async function main() {
   await seedPartners(payload)
   await seedSiteSettings(payload)
   await seedHomePage(payload)
+  await seedContactPage(payload)
   await seedPublications(payload)
 
   payload.logger.info('[seed:all] complete')

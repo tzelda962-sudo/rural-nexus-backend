@@ -24,6 +24,7 @@
     "seed:researchgate": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/researchgate-publications.ts",
     "seed:site-settings": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/site-settings.ts",
     "seed:homepage": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/homepage.ts",
+    "seed:contact-page": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/contact-page.ts",
     "seed:all": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/index.ts"
   },
   "dependencies": {
