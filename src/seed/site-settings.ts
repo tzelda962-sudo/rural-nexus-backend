@@ -48,12 +48,15 @@ export async function seed(payload: Payload) {
   const existing = await payload.findGlobal({ slug: 'site-settings' })
 
   if (!existing) {
-    payload.logger.info('[seed:site-settings] no site-settings global found')
+    console.log('[seed:site-settings] no site-settings global found')
     return
   }
 
-  await payload.updateGlobal({ slug: 'site-settings', data: { interventionCountries } })
-  payload.logger.info('[seed:site-settings] updated site-settings intervention countries')
+  await payload.updateGlobal({
+    slug: 'site-settings',
+    data: { interventionCountries, _status: 'published' },
+  })
+  console.log('[seed:site-settings] updated site-settings intervention countries')
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -60,12 +60,12 @@ export async function seed(payload: Payload) {
   const existing = await payload.findGlobal({ slug: 'home-page' })
 
   if (!existing) {
-    payload.logger.info('[seed:homepage] no home-page global found')
+    console.log('[seed:homepage] no home-page global found')
     return
   }
 
-  await payload.updateGlobal({ slug: 'home-page', data: homePageData })
-  payload.logger.info('[seed:homepage] updated home-page global content')
+  await payload.updateGlobal({ slug: 'home-page', data: { ...homePageData, _status: 'published' } })
+  console.log('[seed:homepage] updated home-page global content')
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
