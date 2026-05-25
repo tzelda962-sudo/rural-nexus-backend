@@ -21,6 +21,12 @@ export const AboutPage: GlobalConfig = {
           defaultValue:
             'RuralNexus is an international network of researchers, agronomists, and project managers dedicated to empowering rural resilience through evidence-based innovation and transdisciplinary collaboration.',
         },
+        {
+          name: 'backgroundImage',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'Background image for the header section. If empty, a default image is used.' },
+        },
       ],
     },
     {
@@ -34,7 +40,7 @@ export const AboutPage: GlobalConfig = {
           label: 'Mission Statement',
           type: 'textarea',
           defaultValue:
-            'To catalyze sustainable agricultural transformation in rural communities across Africa and beyond, by connecting scientific knowledge with local innovation systems and strengthening the capacities of farmers, advisors, and development actors.',
+            'Our mission is to advance sustainable agrifood systems and inclusive rural transformation through transdisciplinary research, multi-stakeholder collaboration, and innovation that connects scientific knowledge with local action.',
         },
         {
           name: 'vision',
@@ -55,7 +61,21 @@ export const AboutPage: GlobalConfig = {
           name: 'body',
           type: 'textarea',
           defaultValue:
-            'RuralNexus operates through a transdisciplinary methodology that bridges the gap between academic research and field practice. We embed researchers and practitioners within communities, foster multi-stakeholder innovation platforms, and co-design context-specific solutions.',
+            'RuralNexus operates at the intersection of research, policy, and practice. We work across multiple program areas — each addressing a critical dimension of sustainable rural transformation — and our approach is built on collaboration, evidence, and local ownership.',
+        },
+        { name: 'whatWeDoSubheading', type: 'text', defaultValue: 'What We Do?' },
+        {
+          name: 'whatWeDoBullets',
+          label: 'What We Do — Bullet Points',
+          type: 'array',
+          fields: [{ name: 'bullet', type: 'text', required: true }],
+          defaultValue: [
+            { bullet: 'Design and implement transdisciplinary research programmes in agrifood systems' },
+            { bullet: 'Facilitate multi-stakeholder innovation platforms connecting researchers, farmers, and policymakers' },
+            { bullet: 'Co-develop context-specific tools and methodologies for sustainable rural transformation' },
+            { bullet: 'Provide technical assistance, capacity building, and institutional strengthening' },
+            { bullet: 'Publish and disseminate open-access knowledge resources for the global development community' },
+          ],
         },
         {
           name: 'pillars',
@@ -107,7 +127,7 @@ export const AboutPage: GlobalConfig = {
           ],
           defaultValue: [
             { name: 'West Africa', countries: 'Burkina Faso, Ghana, Niger, Cameroon' },
-            { name: 'East Africa', countries: 'Tanzania, Uganda, Kenya' },
+            { name: 'East Africa', countries: 'Tanzania, Uganda, Kenya, Ethiopia' },
             { name: 'Southern Africa', countries: 'Zambia, Angola' },
             { name: 'Indian Ocean', countries: 'Madagascar' },
           ],
@@ -131,7 +151,6 @@ export const AboutPage: GlobalConfig = {
             { title: 'Community First', description: 'Every decision is filtered through the question: does this serve the communities we work with?' },
             { title: 'Scientific Integrity', description: 'We uphold rigorous, reproducible research standards while staying responsive to the complexity of real-world contexts.' },
             { title: 'Inclusivity', description: 'We actively work to amplify the voices of women, youth, and marginalized groups within agricultural innovation systems.' },
-            { title: 'Transparency', description: 'We publish our methods, results, and failures openly — contributing to the global knowledge commons.' },
           ],
         },
       ],

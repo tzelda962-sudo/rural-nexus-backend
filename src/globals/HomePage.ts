@@ -74,7 +74,7 @@ export const HomePage: GlobalConfig = {
           name: 'body',
           type: 'textarea',
           defaultValue:
-            'RuralNexus is more than just an NGO; it is a decentralized ecosystem of researchers, agronomists, and project managers dedicated to bridging the gap between theory and practice on the ground.',
+            'RuralNexus is more than just an NGO; it is a decentralized network of researchers, agronomists, and project managers dedicated to bridging the gap between theory and practice on the ground.',
         },
         {
           name: 'stats',

@@ -30,6 +30,11 @@ export const Programs: CollectionConfig = {
     slugField('title'),
     { name: 'description', type: 'textarea', required: true },
     {
+      name: 'shortDescription',
+      type: 'textarea',
+      admin: { description: 'Short description for the "What We Do" boxes on the About page (2–3 sentences).' },
+    },
+    {
       name: 'color',
       type: 'text',
       required: true,
@@ -101,6 +106,13 @@ export const Programs: CollectionConfig = {
           admin: { description: 'If on, this initiative appears in the site-wide Action Hub Projects tab.' },
         },
       ],
+    },
+    {
+      name: 'keyActivities',
+      type: 'array',
+      labels: { singular: 'Key Activity', plural: 'Key Activities' },
+      admin: { description: 'Key activities shown in the program detail panel on the Programs page.' },
+      fields: [{ name: 'activity', type: 'text', required: true }],
     },
     {
       name: 'seo',

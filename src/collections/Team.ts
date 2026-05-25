@@ -55,5 +55,12 @@ export const Team: CollectionConfig = {
       fields: [{ name: 'skill', type: 'text', required: true }],
     },
     { name: 'avatar', type: 'upload', relationTo: 'media' },
+    {
+      name: 'programAreas',
+      type: 'relationship',
+      relationTo: 'programs',
+      hasMany: true,
+      admin: { description: 'Program areas this team member is associated with.' },
+    },
   ],
 }
