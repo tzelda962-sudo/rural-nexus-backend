@@ -19,8 +19,8 @@ const escapeHtml = (s: string): string =>
 
 export async function sendContactEmail(data: ContactEmailPayload): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.RESEND_FROM_EMAIL || 'noreply@ruralnexus.org'
-  const fromName = process.env.RESEND_FROM_NAME || 'RuralNexus'
+  const from = process.env.RESEND_FROM_EMAIL || 'contact@mail.ruralnexus.org'
+  const fromName = process.env.RESEND_FROM_NAME || 'RuralNexus Contact'
   const adminEmail = process.env.ADMIN_EMAIL
 
   if (!apiKey || !adminEmail) {

@@ -361,3 +361,207 @@ DO $$ BEGIN
     ADD CONSTRAINT "_site_v_version_footer_quick_links_parent_id__site_v_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "_site_v"("id") ON DELETE CASCADE;
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 18. projects_page global (live table) ─────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "projects_page" (
+  "id"                        serial PRIMARY KEY,
+  "header_eyebrow"            varchar,
+  "header_heading"            varchar,
+  "header_body"               varchar,
+  "cta_section_heading"       varchar,
+  "cta_section_body"          varchar,
+  "cta_section_cta_label"     varchar,
+  "cta_section_cta_path"      varchar,
+  "seo_meta_title"            varchar,
+  "seo_meta_description"      varchar,
+  "seo_og_image_id"           integer,
+  "_status"                   varchar DEFAULT 'draft',
+  "updated_at"                timestamp(3) with time zone,
+  "created_at"                timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+DO $$ BEGIN
+  ALTER TABLE "projects_page"
+    ADD CONSTRAINT "projects_page_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 19. _projects_page_v (draft versions) ─────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "_projects_page_v" (
+  "id"                                serial PRIMARY KEY,
+  "parent_id"                         integer,
+  "version_header_eyebrow"            varchar,
+  "version_header_heading"            varchar,
+  "version_header_body"               varchar,
+  "version_cta_section_heading"       varchar,
+  "version_cta_section_body"          varchar,
+  "version_cta_section_cta_label"     varchar,
+  "version_cta_section_cta_path"      varchar,
+  "version_seo_meta_title"            varchar,
+  "version_seo_meta_description"      varchar,
+  "version_seo_og_image_id"           integer,
+  "version__status"                   varchar DEFAULT 'draft',
+  "updated_at"                        timestamp(3) with time zone,
+  "created_at"                        timestamp(3) with time zone DEFAULT now() NOT NULL,
+  "latest"                            boolean,
+  "autosave"                          boolean
+);
+
+ALTER TABLE "_projects_page_v" ADD COLUMN IF NOT EXISTS "version_updated_at" timestamp(3) with time zone;
+ALTER TABLE "_projects_page_v" ADD COLUMN IF NOT EXISTS "version_created_at" timestamp(3) with time zone;
+
+CREATE INDEX IF NOT EXISTS "_projects_page_v_parent_id_idx" ON "_projects_page_v" USING btree ("parent_id");
+CREATE INDEX IF NOT EXISTS "_projects_page_v_version_status_idx" ON "_projects_page_v" USING btree ("version__status");
+CREATE INDEX IF NOT EXISTS "_projects_page_v_latest_idx" ON "_projects_page_v" USING btree ("latest");
+
+DO $$ BEGIN
+  ALTER TABLE "_projects_page_v"
+    ADD CONSTRAINT "_projects_page_v_parent_id_projects_page_id_fk"
+    FOREIGN KEY ("parent_id") REFERENCES "projects_page"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "_projects_page_v"
+    ADD CONSTRAINT "_projects_page_v_version_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("version_seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 20. publications_page global (live table) ─────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "publications_page" (
+  "id"                        serial PRIMARY KEY,
+  "header_eyebrow"            varchar,
+  "header_heading"            varchar,
+  "header_body"               varchar,
+  "cta_section_heading"       varchar,
+  "cta_section_body"          varchar,
+  "cta_section_cta_label"     varchar,
+  "cta_section_cta_path"      varchar,
+  "seo_meta_title"            varchar,
+  "seo_meta_description"      varchar,
+  "seo_og_image_id"           integer,
+  "_status"                   varchar DEFAULT 'draft',
+  "updated_at"                timestamp(3) with time zone,
+  "created_at"                timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+DO $$ BEGIN
+  ALTER TABLE "publications_page"
+    ADD CONSTRAINT "publications_page_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 21. _publications_page_v (draft versions) ─────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "_publications_page_v" (
+  "id"                                serial PRIMARY KEY,
+  "parent_id"                         integer,
+  "version_header_eyebrow"            varchar,
+  "version_header_heading"            varchar,
+  "version_header_body"               varchar,
+  "version_cta_section_heading"       varchar,
+  "version_cta_section_body"          varchar,
+  "version_cta_section_cta_label"     varchar,
+  "version_cta_section_cta_path"      varchar,
+  "version_seo_meta_title"            varchar,
+  "version_seo_meta_description"      varchar,
+  "version_seo_og_image_id"           integer,
+  "version__status"                   varchar DEFAULT 'draft',
+  "updated_at"                        timestamp(3) with time zone,
+  "created_at"                        timestamp(3) with time zone DEFAULT now() NOT NULL,
+  "latest"                            boolean,
+  "autosave"                          boolean
+);
+
+ALTER TABLE "_publications_page_v" ADD COLUMN IF NOT EXISTS "version_updated_at" timestamp(3) with time zone;
+ALTER TABLE "_publications_page_v" ADD COLUMN IF NOT EXISTS "version_created_at" timestamp(3) with time zone;
+
+CREATE INDEX IF NOT EXISTS "_publications_page_v_parent_id_idx" ON "_publications_page_v" USING btree ("parent_id");
+CREATE INDEX IF NOT EXISTS "_publications_page_v_version_status_idx" ON "_publications_page_v" USING btree ("version__status");
+CREATE INDEX IF NOT EXISTS "_publications_page_v_latest_idx" ON "_publications_page_v" USING btree ("latest");
+
+DO $$ BEGIN
+  ALTER TABLE "_publications_page_v"
+    ADD CONSTRAINT "_publications_page_v_parent_id_publications_page_id_fk"
+    FOREIGN KEY ("parent_id") REFERENCES "publications_page"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "_publications_page_v"
+    ADD CONSTRAINT "_publications_page_v_version_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("version_seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 22. news_page global (live table) ─────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "news_page" (
+  "id"                        serial PRIMARY KEY,
+  "header_eyebrow"            varchar,
+  "header_heading"            varchar,
+  "header_body"               varchar,
+  "cta_section_heading"       varchar,
+  "cta_section_body"          varchar,
+  "cta_section_cta_label"     varchar,
+  "cta_section_cta_path"      varchar,
+  "seo_meta_title"            varchar,
+  "seo_meta_description"      varchar,
+  "seo_og_image_id"           integer,
+  "_status"                   varchar DEFAULT 'draft',
+  "updated_at"                timestamp(3) with time zone,
+  "created_at"                timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+DO $$ BEGIN
+  ALTER TABLE "news_page"
+    ADD CONSTRAINT "news_page_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+-- ── 23. _news_page_v (draft versions) ─────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS "_news_page_v" (
+  "id"                                serial PRIMARY KEY,
+  "parent_id"                         integer,
+  "version_header_eyebrow"            varchar,
+  "version_header_heading"            varchar,
+  "version_header_body"               varchar,
+  "version_cta_section_heading"       varchar,
+  "version_cta_section_body"          varchar,
+  "version_cta_section_cta_label"     varchar,
+  "version_cta_section_cta_path"      varchar,
+  "version_seo_meta_title"            varchar,
+  "version_seo_meta_description"      varchar,
+  "version_seo_og_image_id"           integer,
+  "version__status"                   varchar DEFAULT 'draft',
+  "updated_at"                        timestamp(3) with time zone,
+  "created_at"                        timestamp(3) with time zone DEFAULT now() NOT NULL,
+  "latest"                            boolean,
+  "autosave"                          boolean
+);
+
+ALTER TABLE "_news_page_v" ADD COLUMN IF NOT EXISTS "version_updated_at" timestamp(3) with time zone;
+ALTER TABLE "_news_page_v" ADD COLUMN IF NOT EXISTS "version_created_at" timestamp(3) with time zone;
+
+CREATE INDEX IF NOT EXISTS "_news_page_v_parent_id_idx" ON "_news_page_v" USING btree ("parent_id");
+CREATE INDEX IF NOT EXISTS "_news_page_v_version_status_idx" ON "_news_page_v" USING btree ("version__status");
+CREATE INDEX IF NOT EXISTS "_news_page_v_latest_idx" ON "_news_page_v" USING btree ("latest");
+
+DO $$ BEGIN
+  ALTER TABLE "_news_page_v"
+    ADD CONSTRAINT "_news_page_v_parent_id_news_page_id_fk"
+    FOREIGN KEY ("parent_id") REFERENCES "news_page"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE "_news_page_v"
+    ADD CONSTRAINT "_news_page_v_version_seo_og_image_id_media_id_fk"
+    FOREIGN KEY ("version_seo_og_image_id") REFERENCES "media"("id") ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
