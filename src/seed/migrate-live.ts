@@ -163,9 +163,9 @@ async function main() {
   // Phase 1: safe to run now
   await phase1_aboutPage(token)
 
-  // Phase 2: uncomment AFTER deploying the updated Payload backend schema
-  // await phase2_aboutPageNewFields(token)
-  // await phase2_teamProgramAreas(token)
+  // Phase 2: new schema fields
+  await phase2_aboutPageNewFields(token)
+  await phase2_teamProgramAreas(token)
 
   console.log('\n✅ Migration complete')
 }
