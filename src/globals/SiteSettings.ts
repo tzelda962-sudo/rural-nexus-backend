@@ -53,18 +53,48 @@ export const SiteSettings: GlobalConfig = {
               label: 'Who We Are',
               path: '/about',
               children: [
-                { label: 'Overview', path: '/about', description: 'Our mission & vision', icon: 'Info' },
-                { label: 'Impact Metrics', path: '/impact', description: 'Measurable outcomes', icon: 'BarChart3' },
-                { label: 'Field Stories', path: '/stories', description: 'Voices from the ground', icon: 'MessageSquareQuote' },
+                {
+                  label: 'Overview',
+                  path: '/about',
+                  description: 'Our mission & vision',
+                  icon: 'Info',
+                },
+                {
+                  label: 'Impact Metrics',
+                  path: '/impact',
+                  description: 'Measurable outcomes',
+                  icon: 'BarChart3',
+                },
+                {
+                  label: 'Field Stories',
+                  path: '/stories',
+                  description: 'Voices from the ground',
+                  icon: 'MessageSquareQuote',
+                },
               ],
             },
             {
               label: 'What We Do',
               path: '/programs',
               children: [
-                { label: 'Our Programs', path: '/programs', description: 'Core strategic pillars', icon: 'Layers' },
-                { label: 'Action Hub', path: '/events', description: 'Projects & Publications', icon: 'Rocket' },
-                { label: 'Research & Tools', path: '/research', description: 'Methodological resources', icon: 'BookOpen' },
+                {
+                  label: 'Our Programs',
+                  path: '/programs',
+                  description: 'Core strategic pillars',
+                  icon: 'Layers',
+                },
+                {
+                  label: 'Action Hub',
+                  path: '/events',
+                  description: 'Projects & Publications',
+                  icon: 'Rocket',
+                },
+                {
+                  label: 'Transdisciplinary Research Tools',
+                  path: '/research',
+                  description: 'Methodological resources',
+                  icon: 'BookOpen',
+                },
               ],
             },
             { label: 'Gallery', path: '/gallery' },
@@ -150,7 +180,10 @@ export const SiteSettings: GlobalConfig = {
       name: 'interventionCountries',
       type: 'array',
       labels: { singular: 'Country', plural: 'Countries of Intervention' },
-      admin: { description: 'Countries where RuralNexus has active field operations. Used to power the interactive map on the Our Network page.' },
+      admin: {
+        description:
+          'Countries where RuralNexus has active field operations. Used to power the interactive map on the Our Network page.',
+      },
       fields: [
         { name: 'name', type: 'text', required: true },
         {
@@ -162,7 +195,9 @@ export const SiteSettings: GlobalConfig = {
         {
           name: 'programs',
           type: 'textarea',
-          admin: { description: 'Brief note on active programs in this country (shown in map tooltip).' },
+          admin: {
+            description: 'Brief note on active programs in this country (shown in map tooltip).',
+          },
         },
       ],
     },
