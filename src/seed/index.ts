@@ -10,6 +10,8 @@ import { seed as seedPartners } from './partners'
 import { seed as seedHomePage } from './homepage'
 import { seed as seedSiteSettings } from './site-settings'
 import { seed as seedContactPage } from './contact-page'
+import { seed as seedResearchTools } from './research-tools'
+import { seed as seedFixEmptyRichText } from './fix-empty-richtext'
 
 // Publications data (kept inline to avoid importing the legacy standalone script)
 const publications = [
@@ -77,6 +79,8 @@ async function main() {
   await seedHomePage(payload)
   await seedContactPage(payload)
   await seedPublications(payload)
+  await seedResearchTools(payload)
+  await seedFixEmptyRichText(payload)
 
   payload.logger.info('[seed:all] complete')
   process.exit(0)

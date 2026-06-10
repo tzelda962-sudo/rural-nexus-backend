@@ -3,6 +3,7 @@ import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isAnyone } from '../access/isAnyone'
 import { slugField } from '../fields/slug'
 import { iconEnumField } from '../fields/iconEnum'
+import { EMPTY_RICH_TEXT } from '../lib/richText'
 
 export const Programs: CollectionConfig = {
   slug: 'programs',
@@ -38,7 +39,13 @@ export const Programs: CollectionConfig = {
       name: 'color',
       type: 'text',
       required: true,
-      admin: { description: 'Tailwind color name (e.g. cyan, emerald)' },
+      defaultValue: 'primary',
+      admin: {
+        description: 'Theme color for this program area (used for cards, icons, and accents across the site).',
+        components: {
+          Field: '/fields/ColorSwatchField#ColorSwatchField',
+        },
+      },
     },
     {
       name: 'heroImage',
@@ -49,11 +56,13 @@ export const Programs: CollectionConfig = {
     {
       name: 'longDescription',
       type: 'richText',
+      defaultValue: EMPTY_RICH_TEXT,
       admin: { description: 'Body content for the program detail page' },
     },
     {
       name: 'methodologySection',
       type: 'richText',
+      defaultValue: EMPTY_RICH_TEXT,
       admin: { description: '"How we work on this pillar" section' },
     },
     {
@@ -98,7 +107,7 @@ export const Programs: CollectionConfig = {
         { name: 'stat', type: 'text', admin: { description: 'Headline metric, e.g. "12 villages, 4.5M L/yr"' } },
         iconEnumField({ name: 'icon', description: 'Icon shown on the initiative card.' }),
         { name: 'heroImage', type: 'upload', relationTo: 'media' },
-        { name: 'longDescription', type: 'richText', admin: { description: 'Body content for the initiative detail page' } },
+        { name: 'longDescription', type: 'richText', defaultValue: EMPTY_RICH_TEXT, admin: { description: 'Body content for the initiative detail page' } },
         {
           name: 'showInProjectsTab',
           type: 'checkbox',

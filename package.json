@@ -25,6 +25,8 @@
     "seed:site-settings": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/site-settings.ts",
     "seed:homepage": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/homepage.ts",
     "seed:contact-page": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/contact-page.ts",
+    "seed:fix-richtext": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/fix-empty-richtext.ts",
+    "seed:research-tools": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/research-tools.ts",
     "migrate:live": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/migrate-live.ts",
     "migrate:live:dry": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/migrate-live.ts --dry-run",
     "seed:all": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file=.env src/seed/index.ts"

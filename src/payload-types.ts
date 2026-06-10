@@ -82,6 +82,7 @@ export interface Config {
     'contact-inquiries': ContactInquiry;
     publications: Publication;
     partners: Partner;
+    'research-tools': ResearchTool;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -104,6 +105,7 @@ export interface Config {
     'contact-inquiries': ContactInquiriesSelect<false> | ContactInquiriesSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
+    'research-tools': ResearchToolsSelect<false> | ResearchToolsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -120,7 +122,9 @@ export interface Config {
     'programs-page': ProgramsPage;
     'program-detail-page': ProgramDetailPage;
     'initiative-detail-page': InitiativeDetailPage;
-    'events-page': EventsPage;
+    'projects-page': ProjectsPage;
+    'publications-page': PublicationsPage;
+    'news-page': NewsPage;
     'stories-page': StoriesPage;
     'story-detail-page': StoryDetailPage;
     'gallery-page': GalleryPage;
@@ -136,7 +140,9 @@ export interface Config {
     'programs-page': ProgramsPageSelect<false> | ProgramsPageSelect<true>;
     'program-detail-page': ProgramDetailPageSelect<false> | ProgramDetailPageSelect<true>;
     'initiative-detail-page': InitiativeDetailPageSelect<false> | InitiativeDetailPageSelect<true>;
-    'events-page': EventsPageSelect<false> | EventsPageSelect<true>;
+    'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
+    'publications-page': PublicationsPageSelect<false> | PublicationsPageSelect<true>;
+    'news-page': NewsPageSelect<false> | NewsPageSelect<true>;
     'stories-page': StoriesPageSelect<false> | StoriesPageSelect<true>;
     'story-detail-page': StoryDetailPageSelect<false> | StoryDetailPageSelect<true>;
     'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
@@ -259,7 +265,11 @@ export interface Program {
   slug: string;
   description: string;
   /**
-   * Tailwind color name (e.g. cyan, emerald)
+   * Short description for the "What We Do" boxes on the About page (2–3 sentences).
+   */
+  shortDescription?: string | null;
+  /**
+   * Theme color for this program area (used for cards, icons, and accents across the site).
    */
   color: string;
   /**
@@ -382,6 +392,15 @@ export interface Program {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Key activities shown in the program detail panel on the Programs page.
+   */
+  keyActivities?:
+    | {
+        activity: string;
+        id?: string | null;
+      }[]
+    | null;
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -444,6 +463,10 @@ export interface Team {
   name: string;
   role: string;
   /**
+   * Controls display order (lower numbers first). Leave empty to sort last.
+   */
+  order?: number | null;
+  /**
    * Controls how this member is grouped and displayed on the site.
    */
   memberType: 'ceo' | 'pa-manager' | 'advisory' | 'staff';
@@ -456,6 +479,20 @@ export interface Team {
    */
   parent?: (number | null) | Team;
   bio?: string | null;
+  /**
+   * e.g. "Nairobi, Kenya" — shown for advisory board / collaborating experts.
+   */
+  location?: string | null;
+  /**
+   * Optional "Know more" link shown on the network/collaborators page (e.g. a place, university, or profile).
+   */
+  link?: {
+    linkLabel?: string | null;
+    /**
+     * Full URL, e.g. https://...
+     */
+    linkUrl?: string | null;
+  };
   expertise?:
     | {
         skill: string;
@@ -463,6 +500,10 @@ export interface Team {
       }[]
     | null;
   avatar?: (number | null) | Media;
+  /**
+   * Program areas this team member is associated with.
+   */
+  programAreas?: (number | Program)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -720,6 +761,23 @@ export interface Partner {
   createdAt: string;
 }
 /**
+ * Methodologies and tools featured at the top of the Research & Resources page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-tools".
+ */
+export interface ResearchTool {
+  id: number;
+  title: string;
+  description?: string | null;
+  /**
+   * Controls display order (lower numbers first).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -802,6 +860,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'partners';
         value: number | Partner;
+      } | null)
+    | ({
+        relationTo: 'research-tools';
+        value: number | ResearchTool;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -916,6 +978,7 @@ export interface ProgramsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description?: T;
+  shortDescription?: T;
   color?: T;
   heroImage?: T;
   longDescription?: T;
@@ -939,6 +1002,12 @@ export interface ProgramsSelect<T extends boolean = true> {
         heroImage?: T;
         longDescription?: T;
         showInProjectsTab?: T;
+        id?: T;
+      };
+  keyActivities?:
+    | T
+    | {
+        activity?: T;
         id?: T;
       };
   seo?:
@@ -984,10 +1053,18 @@ export interface NewsEventsSelect<T extends boolean = true> {
 export interface TeamSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  order?: T;
   memberType?: T;
   show?: T;
   parent?: T;
   bio?: T;
+  location?: T;
+  link?:
+    | T
+    | {
+        linkLabel?: T;
+        linkUrl?: T;
+      };
   expertise?:
     | T
     | {
@@ -995,6 +1072,7 @@ export interface TeamSelect<T extends boolean = true> {
         id?: T;
       };
   avatar?: T;
+  programAreas?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1150,6 +1228,17 @@ export interface PartnersSelect<T extends boolean = true> {
   website?: T;
   logo?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-tools_select".
+ */
+export interface ResearchToolsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1448,6 +1537,10 @@ export interface AboutPage {
     heading?: string | null;
     headingEmphasis?: string | null;
     body?: string | null;
+    /**
+     * Background image for the header section. If empty, a default image is used.
+     */
+    backgroundImage?: (number | null) | Media;
   };
   missionVision?: {
     heading?: string | null;
@@ -1457,6 +1550,13 @@ export interface AboutPage {
   approachSection?: {
     heading?: string | null;
     body?: string | null;
+    whatWeDoSubheading?: string | null;
+    whatWeDoBullets?:
+      | {
+          bullet: string;
+          id?: string | null;
+        }[]
+      | null;
     pillars?:
       | {
           title?: string | null;
@@ -1598,23 +1698,73 @@ export interface InitiativeDetailPage {
   createdAt?: string | null;
 }
 /**
- * Controls the /events Action Hub chrome. Projects tab sources from Programs.initiatives where showInProjectsTab=true. Publications tab sources from the Publications collection.
+ * Controls the /projects page header and CTA. Project cards are sourced from Programs → Initiatives where showcase=true.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events-page".
+ * via the `definition` "projects-page".
  */
-export interface EventsPage {
+export interface ProjectsPage {
   id: number;
   header?: {
     eyebrow?: string | null;
-    headlinePrefix?: string | null;
-    headlineEmphasis?: string | null;
+    heading?: string | null;
     body?: string | null;
   };
-  tabs?: {
-    projectsTabLabel?: string | null;
-    publicationsTabLabel?: string | null;
-    newsTabLabel?: string | null;
+  ctaSection?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Controls the /publications listing page header and CTA. Publication cards are sourced from the Publications collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications-page".
+ */
+export interface PublicationsPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+  };
+  ctaSection?: {
+    heading?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaPath?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Controls the /news listing page header and CTA. News cards are sourced from the News & Events collection.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-page".
+ */
+export interface NewsPage {
+  id: number;
+  header?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
   };
   ctaSection?: {
     heading?: string | null;
@@ -2117,6 +2267,7 @@ export interface AboutPageSelect<T extends boolean = true> {
         heading?: T;
         headingEmphasis?: T;
         body?: T;
+        backgroundImage?: T;
       };
   missionVision?:
     | T
@@ -2130,6 +2281,13 @@ export interface AboutPageSelect<T extends boolean = true> {
     | {
         heading?: T;
         body?: T;
+        whatWeDoSubheading?: T;
+        whatWeDoBullets?:
+          | T
+          | {
+              bullet?: T;
+              id?: T;
+            };
         pillars?:
           | T
           | {
@@ -2255,23 +2413,79 @@ export interface InitiativeDetailPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events-page_select".
+ * via the `definition` "projects-page_select".
  */
-export interface EventsPageSelect<T extends boolean = true> {
+export interface ProjectsPageSelect<T extends boolean = true> {
   header?:
     | T
     | {
         eyebrow?: T;
-        headlinePrefix?: T;
-        headlineEmphasis?: T;
+        heading?: T;
         body?: T;
       };
-  tabs?:
+  ctaSection?:
     | T
     | {
-        projectsTabLabel?: T;
-        publicationsTabLabel?: T;
-        newsTabLabel?: T;
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications-page_select".
+ */
+export interface PublicationsPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+      };
+  ctaSection?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaPath?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-page_select".
+ */
+export interface NewsPageSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
       };
   ctaSection?:
     | T

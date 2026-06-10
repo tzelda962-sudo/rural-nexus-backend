@@ -21,6 +21,7 @@ import { VolunteerStats } from './collections/VolunteerStats'
 import { ContactInquiries } from './collections/ContactInquiries'
 import { Publications } from './collections/Publications'
 import { Partners } from './collections/Partners'
+import { ResearchTools } from './collections/ResearchTools'
 
 import {
   SiteSettings,
@@ -79,6 +80,7 @@ export default buildConfig({
     ContactInquiries,
     Publications,
     Partners,
+    ResearchTools,
   ],
   globals: [
     SiteSettings,
