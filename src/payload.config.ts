@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
@@ -58,6 +59,11 @@ const serverUrl = process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:300
 
 export default buildConfig({
   serverURL: serverUrl,
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'contact@mail.ruralnexus.org',
+    defaultFromName: process.env.RESEND_FROM_NAME || 'RuralNexus',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   admin: {
     user: Users.slug,
     importMap: {
