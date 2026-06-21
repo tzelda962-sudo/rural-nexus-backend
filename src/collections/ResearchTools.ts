@@ -21,6 +21,16 @@ export const ResearchTools: CollectionConfig = {
     { name: 'title', type: 'text', required: true, unique: true },
     { name: 'description', type: 'textarea' },
     {
+      name: 'link',
+      type: 'group',
+      label: 'External Link',
+      admin: { description: "Optional link to the tool's website or documentation." },
+      fields: [
+        { name: 'linkLabel', type: 'text', defaultValue: 'Learn more' },
+        { name: 'linkUrl', type: 'text', admin: { description: 'Full URL, e.g. https://...' } },
+      ],
+    },
+    {
       name: 'order',
       type: 'number',
       admin: { description: 'Controls display order (lower numbers first).' },

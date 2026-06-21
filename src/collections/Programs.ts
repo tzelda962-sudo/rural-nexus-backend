@@ -109,6 +109,16 @@ export const Programs: CollectionConfig = {
         { name: 'heroImage', type: 'upload', relationTo: 'media' },
         { name: 'longDescription', type: 'richText', defaultValue: EMPTY_RICH_TEXT, admin: { description: 'Body content for the initiative detail page' } },
         {
+          name: 'link',
+          type: 'group',
+          label: 'External Link',
+          admin: { description: "Optional link to the project's external website or page." },
+          fields: [
+            { name: 'linkLabel', type: 'text', defaultValue: 'Learn more' },
+            { name: 'linkUrl', type: 'text', admin: { description: 'Full URL, e.g. https://...' } },
+          ],
+        },
+        {
           name: 'showInProjectsTab',
           type: 'checkbox',
           defaultValue: true,
