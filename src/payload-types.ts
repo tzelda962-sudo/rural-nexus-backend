@@ -386,6 +386,16 @@ export interface Program {
           [k: string]: unknown;
         } | null;
         /**
+         * Optional link to the project's external website or page.
+         */
+        link?: {
+          linkLabel?: string | null;
+          /**
+           * Full URL, e.g. https://...
+           */
+          linkUrl?: string | null;
+        };
+        /**
          * If on, this initiative appears in the site-wide Action Hub Projects tab.
          */
         showInProjectsTab?: boolean | null;
@@ -771,6 +781,16 @@ export interface ResearchTool {
   title: string;
   description?: string | null;
   /**
+   * Optional link to the tool's website or documentation.
+   */
+  link?: {
+    linkLabel?: string | null;
+    /**
+     * Full URL, e.g. https://...
+     */
+    linkUrl?: string | null;
+  };
+  /**
    * Controls display order (lower numbers first).
    */
   order?: number | null;
@@ -1001,6 +1021,12 @@ export interface ProgramsSelect<T extends boolean = true> {
         icon?: T;
         heroImage?: T;
         longDescription?: T;
+        link?:
+          | T
+          | {
+              linkLabel?: T;
+              linkUrl?: T;
+            };
         showInProjectsTab?: T;
         id?: T;
       };
@@ -1238,6 +1264,12 @@ export interface PartnersSelect<T extends boolean = true> {
 export interface ResearchToolsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  link?:
+    | T
+    | {
+        linkLabel?: T;
+        linkUrl?: T;
+      };
   order?: T;
   updatedAt?: T;
   createdAt?: T;
