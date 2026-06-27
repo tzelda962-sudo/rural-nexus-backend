@@ -185,12 +185,22 @@ export const SiteSettings: GlobalConfig = {
           'Countries where RuralNexus has active field operations. Used to power the interactive map on the Our Network page.',
       },
       fields: [
-        { name: 'name', type: 'text', required: true },
         {
           name: 'isoCode',
           type: 'text',
           required: true,
-          admin: { description: 'ISO 3166-1 alpha-2 code, e.g. "CM" for Cameroon.' },
+          label: 'Country',
+          admin: {
+            components: {
+              Field: '/fields/CountryPickerField#CountryPickerField',
+            },
+          },
+        },
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+          admin: { hidden: true },
         },
         {
           name: 'programs',
